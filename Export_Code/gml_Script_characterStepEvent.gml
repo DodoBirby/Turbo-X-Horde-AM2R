@@ -445,44 +445,34 @@ if platformCharacterIs(IN_AIR)
 }
 if ((isCollisionBottom(1) || isCollisionPlatformBottom(1)) && platformCharacterIs(IN_AIR) && yVel >= 0)
 {
-    if (state == AIRBALL && ballfall >= 32)
+    yVel = 0
+    yAcc = 0
+    landing = 1
+    turning = 0
+    vjump = 1
+    canturn = 1
+    walljumping = 0
+    if (state != AIRBALL && speedboost == 0)
     {
-        yVel = -1.7
-        dash = 0
-        sfx_play(sndBallBounce)
-        ballbounce = 8
+        image_index = 0
+        state = STANDING
+        idle = 0
+        statetime = 0
+        xVel = 0
+        xAcc = 0
+        PlayLandingSound(get_floor_material())
     }
-    else
+    if (state == AIRBALL && sball == 0 && (!moverobj))
     {
-        yVel = 0
-        yAcc = 0
-        landing = 1
-        turning = 0
-        vjump = 1
-        canturn = 1
-        walljumping = 0
-        if (state != AIRBALL)
-        {
-            image_index = 0
-            state = STANDING
-            idle = 0
-            statetime = 0
-            xVel = 0
-            xAcc = 0
-            PlayLandingSound(get_floor_material())
-        }
-        if (state == AIRBALL && sball == 0 && (!moverobj))
-        {
-            state = BALL
-            statetime = 0
-            if (mockball == 0)
-            {
-                xVel = 0
-                xAcc = 0
-                dash = 0
-            }
-            sfx_play(sndCrouch)
-        }
+        state = BALL
+        statetime = 0
+        sfx_play(sndCrouch)
+    }
+    if (speedboost == 1 && state != BALL)
+    {
+        state = RUNNING
+        statetime = 100
+        dash = 30
     }
     if (sball == 0)
     {
@@ -556,6 +546,12 @@ if ((isCollisionLeft(1) && xVel < 0) || (isCollisionRight(1) && xVel > 0))
     if platformCharacterIs(IN_AIR)
         xAcc = 0
     jumpfwd = 0
+    if (speedboost == 1 && vjump == 0 && platformCharacterIs(IN_AIR))
+    {
+        charge = 120
+        sfx_stop(sndSBChargeLoop)
+        sfx_loop(sndSBChargeLoop)
+    }
 }
 if ((state == STANDING || state == DUCKING || state == RUNNING) && charge > 0 && ((inwater == 0 && waterfall == 0) || global.currentsuit == 2) && kJump && kJumpPushedSteps == 0 && kLeft == 0 && kRight == 0)
 {
@@ -877,6 +873,30 @@ if (state == SUPERJUMP)
         xVel = -7.5
         yVel = -3.5
         facing = LEFT
+    }
+    if (kWalk > 0)
+    {
+        if (sjball == 0)
+            state = RUNNING
+        else
+            state = BALL
+        speedboost = 1
+        dash = 30
+        statetime = 100
+        sfx_stop(sndSJLoop)
+        if (sjdir == 0)
+        {
+            if (kLeft > 0)
+            {
+                xVel = -7.4
+                facing = LEFT
+            }
+            if (kRight > 0)
+            {
+                xVel = 7.4
+                facing = RIGHT
+            }
+        }
     }
     if ((sjdir != 0 && facing == RIGHT && isCollisionRightSlope(0)) || (facing == LEFT && isCollisionLeftSlope(0)))
     {
