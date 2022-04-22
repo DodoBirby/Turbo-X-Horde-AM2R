@@ -1,0 +1,22 @@
+with (clawr)
+    instance_destroy()
+with (clawl)
+    instance_destroy()
+with (fang)
+    instance_destroy()
+with (oAutoHordeXEyes)
+    instance_destroy()
+with (oAutoHordeXCamera)
+    instance_destroy()
+dsolid = 0
+if (disolid1 > self && disolid2 > self && disolid3 > self && disolid4 > self)
+{
+    with (disolid1)
+        instance_destroy()
+    with (disolid2)
+        instance_destroy()
+    with (disolid3)
+        instance_destroy()
+    with (disolid4)
+        instance_destroy()
+}
